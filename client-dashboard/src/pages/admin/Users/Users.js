@@ -69,7 +69,7 @@ export const Users = () => {
       <div>
       <h1>Lista de Usuarios</h1>
       <div className="user-list">
-        {users.map((user, index) => (
+        {users.reverse().map((user, index) => (
           <div className="card" key={index}>
             <div className="card-content">
               <div className="user-name">{user.firstname} {user.lastname}</div>
@@ -110,8 +110,8 @@ export const Users = () => {
           <div>
             <h1>Actualizar Usuario</h1>
             <button className="close-button" onClick={closeModal}>
-            X
-          </button>
+              X
+            </button>
             <RegisterForm user={selectedUser} />
           </div>
         ) : (
@@ -125,6 +125,9 @@ export const Users = () => {
         contentLabel="Agregar Usuario"
       >
         <h3>Agregar Usuario</h3>
+        <button className="close-button" onClick={closeRegisterModal}>
+          X
+        </button>
         <RegisterForm />
       </Modal>
       <Modal
