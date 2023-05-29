@@ -1,0 +1,118 @@
+// styles/UserList.scss
+.card {
+    margin: 1em;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    .card-content {
+      padding: 1em;
+      .user-name {
+        font-size: 1.2em;
+        margin-bottom: 0.5em;
+      }
+      .user-email {
+        font-size: 1em;
+        color: #777;
+      }
+      .user-status {
+        margin-top: 1em;
+        color: green;
+      }
+      .user-role {
+        margin-top: 0.5em;
+        color: #999;
+      }
+    }
+  }
+  
+.confirmation-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    max-width: 90%;
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .user-list {
+    position: relative;
+    padding-bottom: 100px; // Ajusta este valor según el tamaño del botón flotante
+  }
+  
+  .add-user-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: rgb(0, 0, 0);
+    color: white;
+    border: none;
+    border-radius: 10%;
+    width: 10rem;
+    height: 60px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+  }
+  
+  .add-user-button:hover {
+    background-color: darkgreen;
+  }
+
+  .close-button {
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #888;
+    background: none;
+    border: none;
+    outline: none;
+  }
+
+  .delete-button {
+    background-color: #ff0000;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .delete-button:hover {
+    background-color: #cc0000;
+  }
+  
+  .edit-button {
+    background-color: #008000;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .edit-button:hover {
+    background-color: #006600;
+  }
+  .details-button {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .details-button:hover {
+    background-color: #0056b3;
+  }
+  

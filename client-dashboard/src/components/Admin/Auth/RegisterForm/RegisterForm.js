@@ -4,11 +4,13 @@ import { Auth } from "../../../../api";
 import { Form, Dropdown } from "semantic-ui-react";
 import { useFormik } from "formik";
 import { initialValues, validationSchema } from "./RegisterForm.form";
+import { UsersApi } from "../../../../api/usersapi";
 
 const authController = new Auth();
+const usersApi = new UsersApi();
 
 export const RegisterForm = (props) => {
-  const { openLogin } = props;
+  const { openLogin, user } = props;
   const [error, setError] = useState("");
   const [departamentos, setDepartamentos] = useState([]);
   const [municipios, setMunicipios] = useState([]);
@@ -69,11 +71,17 @@ export const RegisterForm = (props) => {
       setMunicipios([]);
     }
   };
-
+  const userValues = initialValues();
+  if(user){
+    const { email, firstname, lastname} = user
+    userValues = {email, firstname, lastname} 
+  }
   const formik = useFormik({
-    initialValues: initialValues(),
-    /* Validaciones de error */
-    validationSchema: validationSchema(),
+    
+    initialValues: user ? userValues : initialValues(),
+    /* Validaciones de error solo si es registro, cuando es update no*/
+    
+    validationSchema: user ? null : validationSchema(),
     /* Sólo validamos cuando enviemos el formulario, no mientras se escribe */
     validateOnChange: false,
     validateOnBlur: false,
@@ -81,13 +89,20 @@ export const RegisterForm = (props) => {
     onSubmit: async (formValue) => {
       try {
         setError("");
-        await authController.register(formValue);
-        openLogin();
+        if (user) {
+          // Llamar a la función update en lugar de register
+          const accessToken = authController.getAccessToken();
+          await usersApi.updateUser(user._id, accessToken, formValue);
+        } else {
+          await authController.register(formValue);
+          openLogin();
+        }
       } catch (error) {
         setError("Error en el servidor");
       }
     },
   });
+
   return (
     <Form className="register-form" onSubmit={formik.handleSubmit}>
       <Form.Group widths="equal">
@@ -123,67 +138,77 @@ export const RegisterForm = (props) => {
         value={formik.values.email}
         error={formik.errors.email}
       />
-      <Form.Input
-        name="new_password"
-        label="Contraseña"
-        type="password"
-        autoComplete="new_password"
-        placeholder="Contraseña"
-        onChange={formik.handleChange}
-        value={formik.values.new_password}
-        error={formik.errors.new_password}
-      />
-      <Form.Input
-        name="confirmPassword"
-        label="Repetir contraseña"
-        type="password"
-        autoComplete="confirmPassword"
-        placeholder="Repetir contraseña"
-        onChange={formik.handleChange}
-        value={formik.values.confirmPassword}
-        error={formik.errors.confirmPassword}
-      />
-      <Form.Group widths="equal">
-        <Form.Field>
-          <label>Selecciona un departamento:</label>
-          <Dropdown
-            placeholder="Seleccionar"
-            selection
-            options={departamentos}
-            value={departamentoSeleccionado}
-            onChange={(_, { value }) => {
-              setDepartamentoSeleccionado(value);
-              fetchMunicipios(value);
-            }}
-          />
-        </Form.Field>
-        <Form.Field>
-          <label>Selecciona un municipio:</label>
-          <Dropdown
-            placeholder="Seleccionar"
-            selection
-            options={municipios}
-            value={municipioSeleccionado}
-            onChange={(_, { value }) => setMunicipioSeleccionado(value)}
-            disabled={!departamentoSeleccionado} // Deshabilitar el dropdown de municipios si no se ha seleccionado un departamento
-          />
-        </Form.Field>
-      </Form.Group>
+      {
+        ! user && (
+          <div>
 
-      <Form.Checkbox
-        name="privacyPolicy"
-        label="He leído y acepto las politicas de privacidad"
-        onChange={(_, data) =>
-          formik.setFieldValue("privacyPolicy", data.checked)
-        }
-        checked={formik.values.privacyPolicy}
-        error={formik.errors.privacyPolicy}
-      />
+            <Form.Input
+              name="new_password"
+              label="Contraseña"
+              type="password"
+              autoComplete="new_password"
+              placeholder="Contraseña"
+              onChange={formik.handleChange}
+              value={formik.values.new_password}
+              error={formik.errors.new_password}
+            />
+            <Form.Input
+              name="confirmPassword"
+              label="Repetir contraseña"
+              type="password"
+              autoComplete="confirmPassword"
+              placeholder="Repetir contraseña"
+              onChange={formik.handleChange}
+              value={formik.values.confirmPassword}
+              error={formik.errors.confirmPassword}
+            />
+            <Form.Group widths="equal">
+              <Form.Field>
+                <label>Selecciona un departamento:</label>
+                <Dropdown
+                  placeholder="Seleccionar"
+                  selection
+                  options={departamentos}
+                  value={departamentoSeleccionado}
+                  onChange={(_, { value }) => {
+                    setDepartamentoSeleccionado(value);
+                    fetchMunicipios(value);
+                  }}
+                />
+              </Form.Field>
+              <Form.Field>
+                <label>Selecciona un municipio:</label>
+                <Dropdown
+                  placeholder="Seleccionar"
+                  selection
+                  options={municipios}
+                  value={municipioSeleccionado}
+                  onChange={(_, { value }) => setMunicipioSeleccionado(value)}
+                  disabled={!departamentoSeleccionado} // Deshabilitar el dropdown de municipios si no se ha seleccionado un departamento
+                />
+              </Form.Field>
+            </Form.Group>
+          </div>
+        )
+      }
+      
+      { !user && (
+        <Form.Checkbox
+          name="privacyPolicy"
+          label="He leído y acepto las politicas de privacidad"
+          onChange={(_, data) =>
+            formik.setFieldValue("privacyPolicy", data.checked)
+          }
+          checked={formik.values.privacyPolicy}
+          error={formik.errors.privacyPolicy}
+        />
+      )}
+      
       <Form.Button
         type="submit"
         primary
         fluid
-        content="Registrarse"
+        content={user ? "Actualizar" : "Registrarse"}
         loading={formik.isSubmitting}
       />
       {error && <p className="register-form__error">{error}</p>}

@@ -6,7 +6,8 @@ export const AdminMenu = () => {
   return (
     <Menu fluid vertical icon text className="admin-menu">
       <Menu.Item>
-        <Icon name="user outline">Usuarios</Icon>
+        <Icon name="user outline" >Usuarios</Icon>
+
       </Menu.Item>
     </Menu>
   );

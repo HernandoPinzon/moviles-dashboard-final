@@ -40,7 +40,6 @@ export class Auth {
         "Content-Type": "application/json",
       },
     };
-    console.log(params);
     try {
       const response = await fetch(url, params);
       if (!response.ok) {
@@ -94,7 +93,9 @@ export class Auth {
     return localStorage.getItem(ENV.JWT.REFRESH);
   };
   removeTokens = () => {
+    console.log("removing tokens");
     localStorage.removeItem(ENV.JWT.ACCESS);
     localStorage.removeItem(ENV.JWT.REFRESH);
+
   };
 }
