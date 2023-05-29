@@ -19,17 +19,18 @@ export const Users = () => {
 
   const auth = new Auth();
   const usersApi = new UsersApi();
+  const fetchUsers = async () => {
+    const accessToken = auth.getAccessToken();
+    const fetchedUsers = await usersApi.getAllUsers(accessToken);
+    setUsers(fetchedUsers.reverse());
+  };
   useEffect(() => {
-    const fetchUsers = async () => {
-      const accessToken = auth.getAccessToken();
-      const fetchedUsers = await usersApi.getAllUsers(accessToken);
-      setUsers(fetchedUsers);
-    };
     fetchUsers();
   }, []);
 
   const handleDeleteUser = (e, user) => {
     e.stopPropagation(); // Evita que el evento se propague al abrir el modal
+    console.log(user);
     setUserToDelete(user);
     setShowConfirmationModal(true);
   };
@@ -44,6 +45,9 @@ export const Users = () => {
   const handleEditUser = (userId, user) => {
     setSelectedUser(user);
     setSelectedUserId(userId);
+    setModalIsOpen(true);
+    console.log(selectedUser);
+    console.log(selectedUserId);
   };
   
   const confirmDeleteUser = async () => {
@@ -51,6 +55,7 @@ export const Users = () => {
     await usersApi.deleteUser(userToDelete._id, accessToken);
     setUsers(users.filter(user => user._id !== userToDelete._id));
     closeModal();
+    
   };
   
 
@@ -63,13 +68,14 @@ export const Users = () => {
     setSelectedUser(null);
     setSelectedUserId(null);
     setModalIsOpen(false);
+    fetchUsers();
   };
   return (
     <div>
       <div>
       <h1>Lista de Usuarios</h1>
       <div className="user-list">
-        {users.reverse().map((user, index) => (
+        {users.map((user, index) => (
           <div className="card" key={index}>
             <div className="card-content">
               <div className="user-name">{user.firstname} {user.lastname}</div>
@@ -80,7 +86,7 @@ export const Users = () => {
             <button className="delete-button" onClick={(e) => handleDeleteUser(e, user)}>
               Eliminar
             </button>
-            <button className="edit-button" onClick={() => handleEditUser(user._id)}>Editar</button>
+            <button className="edit-button" onClick={() => handleEditUser(user._id, user)}>Editar</button>
             <button className="details-button" onClick={() => openModal(user)}>
               Detalles
             </button>
@@ -125,9 +131,6 @@ export const Users = () => {
         contentLabel="Agregar Usuario"
       >
         <h3>Agregar Usuario</h3>
-        <button className="close-button" onClick={closeRegisterModal}>
-          X
-        </button>
         <RegisterForm />
       </Modal>
       <Modal

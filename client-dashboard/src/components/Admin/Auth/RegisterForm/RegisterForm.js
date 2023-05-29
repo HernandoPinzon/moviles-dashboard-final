@@ -71,7 +71,7 @@ export const RegisterForm = (props) => {
       setMunicipios([]);
     }
   };
-  const userValues = initialValues();
+  let userValues = initialValues();
   if(user){
     const { email, firstname, lastname} = user
     userValues = {email, firstname, lastname} 
