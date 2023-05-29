@@ -16,7 +16,7 @@ export const AdminLayout = (props) => {
       </div>
       <div className="admin-layout__right">
         <div className="admin-layout__right-header">
-          <button onClick={auth.removeTokens()}>Logout</button>
+          <button onClick={auth.removeTokens}>Logout</button>
         </div>
         <div className="admin-layout__right-content">{children}</div>
       </div>

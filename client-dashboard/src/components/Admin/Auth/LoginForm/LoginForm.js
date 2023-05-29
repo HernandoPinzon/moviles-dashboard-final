@@ -21,6 +21,7 @@ export const LoginForm = () => {
     onSubmit: async (formValue) => {
       try {
         const response = await authController.login(formValue);
+        console.log(response);
         authController.setAccessToken(response.access);
         authController.setRefreshToken(response.refresh);
         login(response.access);

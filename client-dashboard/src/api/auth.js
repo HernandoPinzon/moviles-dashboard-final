@@ -96,6 +96,5 @@ export class Auth {
     console.log("removing tokens");
     localStorage.removeItem(ENV.JWT.ACCESS);
     localStorage.removeItem(ENV.JWT.REFRESH);
-
   };
 }
